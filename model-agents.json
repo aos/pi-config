@@ -1,8 +1,8 @@
 {
 	"mappings": [
-		{ "pattern": "claude-*", "file": "~/.pi/agents/claude.md" },
-		{ "pattern": "gpt-*", "file": "~/.pi/agents/openai.md" },
-		{ "pattern": "kimi-*", "file": "~/.pi/agents/kimi.md" }
+		{ "pattern": "claude-*", "file": "~/.pi/scoped-agents/claude.md" },
+		{ "pattern": "gpt-*", "file": "~/.pi/scoped-agents/openai.md" },
+		{ "pattern": "kimi-*", "file": "~/.pi/scoped-agents/kimi.md" }
 	],
-	"defaultFile": "~/.pi/agents/default.md"
+	"defaultFile": "~/.pi/scoped-agents/default.md"
 }

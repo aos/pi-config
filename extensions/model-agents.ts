@@ -7,11 +7,11 @@
  * Config format:
  * {
  *   "mappings": [
- *     { "pattern": "claude-*", "file": ".pi/agents/claude.md" },
- *     { "pattern": "gpt-4o", "file": ".pi/agents/openai.md" },
+ *     { "pattern": "claude-*", "file": ".pi/scoped-agents/claude.md" },
+ *     { "pattern": "gpt-4o", "file": ".pi/scoped-agents/openai.md" },
  *     { "pattern": "kimi-*", "provider": "moonshot", "file": "~/.pi/agent/agents/kimi.md" }
  *   ],
- *   "defaultFile": ".pi/agents/default.md"
+ *   "defaultFile": ".pi/scoped-agents/default.md"
  * }
  */
 

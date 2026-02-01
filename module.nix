@@ -25,7 +25,7 @@ in
 
   home.file = {
     # Non-package files: agents, keybindings, model-agents, AGENTS.md
-    ".pi/agents".source = "${src}/agents";
+    ".pi/scoped-agents".source = "${src}/agents";
     ".pi/agent/AGENTS.md".source = "${src}/AGENTS.md";
     ".pi/agent/keybindings.json".source = "${src}/keybindings.json";
     ".pi/agent/model-agents.json".source = "${src}/model-agents.json";
