@@ -1,4 +1,4 @@
-{ lib, ... }:
+{ lib, pkgs, ... }:
 
 let
   src = builtins.path {
@@ -12,10 +12,17 @@ let
         "flake.nix"
         "flake.lock"
         "module.nix"
+        "pkgs"
       ];
   };
 in
 {
+  home.packages = with pkgs; [
+    kagi-search
+    browser-tools
+    matryoshka-rlm
+  ];
+
   home.file = {
     # Non-package files: agents, keybindings, model-agents, AGENTS.md
     ".pi/agents".source = "${src}/agents";
