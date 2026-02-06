@@ -40,8 +40,8 @@
 
 **ALWAYS** respect these preferences.
 
-- `matryoshka` skill: navigate and analyze large files (> 300 lines)
 - `kagi-search` skill: search the web for information
-- `agent-browser` skill: browser navigation and automation
+- `browser-tools` skill: browser navigation and automation
+- `matryoshka` skill: navigate and analyze large files (> 300 lines)
 - `rg` command instead of `grep`
 - `fd` command instead of `find`

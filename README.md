@@ -19,7 +19,6 @@ These components are loaded by pi when this repo is installed as a package:
 
 | Skill | Description |
 |-------|-------------|
-| [agent-browser](skills/agent-browser/SKILL.md) | Automates browser interactions for web testing, form filling, screenshots, and data extraction. |
 | [browser-tools](skills/browser-tools/SKILL.md) | Interact with web pages via Chrome DevTools Protocol. Navigate, evaluate JS, take screenshots, pick elements, and dismiss cookie dialogs. |
 | [frontend-design](skills/frontend-design/SKILL.md) | Design and implement distinctive, production-ready frontend interfaces with strong aesthetic direction. |
 | [kagi-search](skills/kagi-search/SKILL.md) | Web search via Kagi. Returns search results with Quick Answers. |
