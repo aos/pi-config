@@ -40,8 +40,8 @@
 
 **ALWAYS** respect these preferences.
 
+- `gh` CLI to search and browse Github
+- `rg` CLI command instead of `grep`
+- `fd` CLI command instead of `find`
 - `kagi-search` skill: search the web for information
-- `browser-tools` skill: browser navigation and automation
-- `matryoshka` skill: navigate and analyze large files (> 300 lines)
-- `rg` command instead of `grep`
-- `fd` command instead of `find`
+- `browser-tools` skill: web browser navigation and automation
