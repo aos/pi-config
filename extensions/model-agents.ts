@@ -141,6 +141,13 @@ export default function (pi: ExtensionAPI) {
 		currentModel = event.model;
 		const file = findMatchingFile(config, event.model, ctx.cwd);
 
+		if (file) {
+			const name = path.basename(file, path.extname(file));
+			ctx.ui.setStatus("model-agents", `agents:${name} +`);
+		} else {
+			ctx.ui.setStatus("model-agents", undefined);
+		}
+
 		if (file && file !== lastLoadedFile) {
 			lastLoadedFile = file;
 			const relativePath = path.relative(ctx.cwd, file);

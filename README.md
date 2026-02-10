@@ -11,6 +11,7 @@ These components are loaded by pi when this repo is installed as a package:
 
 | Extension | Description |
 |-----------|-------------|
+| [custom-footer](extensions/custom-footer.ts) | Jujutsu-aware footer showing jj bookmarks + change IDs. Falls back to git branch for non-jj repos. Displays token stats, context usage, model info, and extension statuses. |
 | [model-agents](extensions/model-agents.ts) | Loads model-specific context files based on the active model. Configure via `.pi/model-agents.json` to map model patterns to custom agent files. |
 | [permission-gate](extensions/permission-gate.ts) | Prompts for confirmation before running potentially dangerous bash commands (rm -rf, sudo, chmod/chown 777). |
 | [review](extensions/review.ts) | Provides a `/review` command for code review. Supports PR review, uncommitted changes, branch comparison, and custom review instructions. |
