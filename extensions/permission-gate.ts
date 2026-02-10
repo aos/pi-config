@@ -93,8 +93,7 @@ export default function (pi: ExtensionAPI) {
       if (!ctx.hasUI) {
         return {
           block: true,
-          reason:
-            `Dangerous command blocked (${labels}) — no UI for confirmation`,
+          reason: `Dangerous command blocked (${labels}) — no UI for confirmation`,
         };
       }
 
