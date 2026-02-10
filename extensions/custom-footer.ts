@@ -14,7 +14,7 @@
 import type { AssistantMessage } from "@mariozechner/pi-ai";
 import type { ExtensionAPI } from "@mariozechner/pi-coding-agent";
 import { truncateToWidth, visibleWidth } from "@mariozechner/pi-tui";
-import { existsSync, statSync, watch, type FSWatcher } from "node:fs";
+import { existsSync, readFileSync, statSync, watch, type FSWatcher } from "node:fs";
 import { dirname, join } from "node:path";
 import { execFileSync } from "node:child_process";
 
@@ -62,9 +62,24 @@ function formatTokens(count: number): string {
 	return `${Math.round(count / 1_000_000)}M`;
 }
 
+/** Read compaction.enabled from settings files, defaulting to true. */
+function isAutoCompactEnabled(): boolean {
+	const home = process.env.HOME || process.env.USERPROFILE || "";
+	const paths = [join(home, ".pi", "agent", "settings.json"), join(process.cwd(), ".pi", "settings.json")];
+	let enabled = true;
+	for (const p of paths) {
+		try {
+			const settings = JSON.parse(readFileSync(p, "utf8"));
+			if (settings.compaction?.enabled !== undefined) enabled = settings.compaction.enabled;
+		} catch {}
+	}
+	return enabled;
+}
+
 export default function (pi: ExtensionAPI) {
 	const jjRoot = findJjRoot();
 	let footerActive = false;
+	const autoCompact = isAutoCompactEnabled();
 
 	function ensureFooter(ctx: { hasUI: boolean; ui: any; sessionManager: any; model: any }) {
 		if (!ctx.hasUI || footerActive) return;
@@ -190,7 +205,7 @@ export default function (pi: ExtensionAPI) {
 					if (totalCacheWrite) parts.push(`W${formatTokens(totalCacheWrite)}`);
 					if (totalCost) parts.push(`$${totalCost.toFixed(3)}`);
 
-					const ctxDisplay = `${ctxPct.toFixed(1)}%/${formatTokens(ctxWindow)}`;
+					const ctxDisplay = `${ctxPct.toFixed(1)}%/${formatTokens(ctxWindow)}${autoCompact ? " (auto)" : ""}`;
 					if (ctxPct > 90) parts.push(theme.fg("error", ctxDisplay));
 					else if (ctxPct > 70) parts.push(theme.fg("warning", ctxDisplay));
 					else parts.push(ctxDisplay);

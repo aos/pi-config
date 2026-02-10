@@ -61,10 +61,7 @@ export default function (pi: ExtensionAPI) {
 
       enabled = !enabled;
       if (enabled) {
-        ctx.ui.setStatus(
-          "permission-gate",
-          ctx.ui.theme.fg("warning", "gate +"),
-        );
+        ctx.ui.setStatus("permission-gate", "gate +");
         ctx.ui.notify(
           "Permission gate enabled — dangerous commands require approval",
           "info",
@@ -79,7 +76,7 @@ export default function (pi: ExtensionAPI) {
   // Show status on startup
   pi.on("session_start", async (_event, ctx) => {
     if (enabled && ctx.hasUI) {
-      ctx.ui.setStatus("permission-gate", ctx.ui.theme.fg("warning", "gate +"));
+      ctx.ui.setStatus("permission-gate", "gate +");
     }
   });
 
