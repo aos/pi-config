@@ -59,6 +59,7 @@ browser-tools dismiss-cookies --reject # Reject cookies (where possible)
 ```
 
 Automatically dismisses EU cookie consent dialogs. Supports:
+
 - **OneTrust** (booking.com, ikea.com, many others)
 - **Google** consent dialogs
 - **Cookiebot**
@@ -72,6 +73,7 @@ Automatically dismisses EU cookie consent dialogs. Supports:
 - Generic cookie banners with common button text patterns
 
 Run after navigating to a page (with a short delay for dialogs to load):
+
 ```bash
 browser-tools nav https://example.com && sleep 2 && browser-tools dismiss-cookies
 ```
@@ -79,6 +81,7 @@ browser-tools nav https://example.com && sleep 2 && browser-tools dismiss-cookie
 ## Debug Mode
 
 Set `DEBUG=1` to enable verbose logging to stderr:
+
 ```bash
 DEBUG=1 browser-tools nav https://example.com
 ```

@@ -2,35 +2,34 @@
 
 Personal configuration for [pi](https://github.com/badlogic/pi-mono/tree/main/packages/coding-agent) coding agent.
 
-
 ## Pi Package (available via `pi install` or nix module)
 
 These components are loaded by pi when this repo is installed as a package:
 
 ### Extensions
 
-| Extension | Description |
-|-----------|-------------|
-| [custom-footer](extensions/custom-footer.ts) | Jujutsu-aware footer showing jj bookmarks + change IDs. Falls back to git branch for non-jj repos. Displays token stats, context usage, model info, and extension statuses. |
-| [model-agents](extensions/model-agents.ts) | Loads model-specific context files based on the active model. Configure via `.pi/model-agents.json` to map model patterns to custom agent files. |
-| [permission-gate](extensions/permission-gate.ts) | Prompts for confirmation before running potentially dangerous bash commands (rm -rf, sudo, chmod/chown 777). |
-| [review](extensions/review.ts) | Provides a `/review` command for code review. Supports PR review, uncommitted changes, branch comparison, and custom review instructions. |
+| Extension                                        | Description                                                                                                                                                                 |
+| ------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [custom-footer](extensions/custom-footer.ts)     | Jujutsu-aware footer showing jj bookmarks + change IDs. Falls back to git branch for non-jj repos. Displays token stats, context usage, model info, and extension statuses. |
+| [model-agents](extensions/model-agents.ts)       | Loads model-specific context files based on the active model. Configure via `.pi/model-agents.json` to map model patterns to custom agent files.                            |
+| [permission-gate](extensions/permission-gate.ts) | Prompts for confirmation before running potentially dangerous bash commands (rm -rf, sudo, chmod/chown 777).                                                                |
+| [review](extensions/review.ts)                   | Provides a `/review` command for code review. Supports PR review, uncommitted changes, branch comparison, and custom review instructions.                                   |
 
 ### Skills
 
-| Skill | Description |
-|-------|-------------|
-| [browser-tools](skills/browser-tools/SKILL.md) | Interact with web pages via Chrome DevTools Protocol. Navigate, evaluate JS, take screenshots, pick elements, and dismiss cookie dialogs. |
-| [frontend-design](skills/frontend-design/SKILL.md) | Design and implement distinctive, production-ready frontend interfaces with strong aesthetic direction. |
-| [kagi-search](skills/kagi-search/SKILL.md) | Web search via Kagi. Returns search results with Quick Answers. |
-| [matryoshka](skills/matryoshka/SKILL.md) | Analyze large documents (100x larger than LLM context) using recursive language model with Nucleus DSL. |
+| Skill                                              | Description                                                                                                                               |
+| -------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| [browser-tools](skills/browser-tools/SKILL.md)     | Interact with web pages via Chrome DevTools Protocol. Navigate, evaluate JS, take screenshots, pick elements, and dismiss cookie dialogs. |
+| [frontend-design](skills/frontend-design/SKILL.md) | Design and implement distinctive, production-ready frontend interfaces with strong aesthetic direction.                                   |
+| [kagi-search](skills/kagi-search/SKILL.md)         | Web search via Kagi. Returns search results with Quick Answers.                                                                           |
+| [matryoshka](skills/matryoshka/SKILL.md)           | Analyze large documents (100x larger than LLM context) using recursive language model with Nucleus DSL.                                   |
 
 ### Prompts
 
-| Prompt | Description |
-|--------|-------------|
+| Prompt                        | Description                                                                                                            |
+| ----------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
 | [handoff](prompts/handoff.md) | Creates a detailed handoff plan of the conversation for continuing work in a new session. Writes to `.plan/handoffs/`. |
-| [pickup](prompts/pickup.md) | Resumes work from a previous handoff session stored in `.plan/handoffs/`. |
+| [pickup](prompts/pickup.md)   | Resumes work from a previous handoff session stored in `.plan/handoffs/`.                                              |
 
 ## Nix-only (home-manager module)
 
@@ -38,19 +37,19 @@ These components are only available when using the nix flake home-manager module
 
 ### Binaries
 
-| Package | Description |
-|---------|-------------|
-| `kagi-search` | CLI tool for Kagi web search |
-| `browser-tools` | CLI tool for Chrome CDP automation |
+| Package          | Description                                                 |
+| ---------------- | ----------------------------------------------------------- |
+| `kagi-search`    | CLI tool for Kagi web search                                |
+| `browser-tools`  | CLI tool for Chrome CDP automation                          |
 | `matryoshka-rlm` | Recursive language model server for large document analysis |
 
 ### Configuration
 
-| Config | Description |
-|--------|-------------|
-| `keybindings` | Custom keybindings for pi TUI |
-| `model-agents.json` | Default model-to-agent mappings |
-| `AGENTS.md` | Global agent behavior guidelines |
+| Config              | Description                      |
+| ------------------- | -------------------------------- |
+| `keybindings`       | Custom keybindings for pi TUI    |
+| `model-agents.json` | Default model-to-agent mappings  |
+| `AGENTS.md`         | Global agent behavior guidelines |
 
 ## Usage
 
@@ -78,6 +77,7 @@ imports = [ inputs.pi-config.homeManagerModules.default ];
 ```
 
 This:
+
 - Installs `kagi-search`, `browser-tools`, and `matryoshka-rlm` binaries
 - Symlinks agent configs into `~/.pi/`
 - Exposes the repo as a local pi package at `~/.pi/agent/packages/pi-config`

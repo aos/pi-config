@@ -87,12 +87,14 @@ scripts/close.sh
 ## Common Patterns
 
 ### Find and count error entries
+
 ```scheme
 (grep "ERROR")
 (count RESULTS)
 ```
 
 ### Extract and sum sales from specific region
+
 ```scheme
 (grep "SALES.*NORTH")
 (map RESULTS (lambda x (parseCurrency (match x "\\$[\\d,]+" 0))))
@@ -100,12 +102,14 @@ scripts/close.sh
 ```
 
 ### Find recent entries by date
+
 ```scheme
 (grep "2024-01-1")
 (filter RESULTS (lambda x (> (parseDate (match x "\\d{4}-\\d{2}-\\d{2}" 0)) "2024-01-15")))
 ```
 
 ### Extract emails from text
+
 ```scheme
 (grep "[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}")
 ```
@@ -115,6 +119,7 @@ scripts/close.sh
 All scripts read default port from `LATTICE_PORT` env var (default: 3456).
 
 ### `start-server.sh`
+
 Starts `lattice-http` server in background.
 
 ```bash
@@ -122,6 +127,7 @@ scripts/start-server.sh [port]   # Default: 3456
 ```
 
 ### `load.sh`
+
 Loads a document for analysis.
 
 ```bash
@@ -133,6 +139,7 @@ scripts/load.sh - < file.txt  # Read from stdin
 ```
 
 ### `query.sh`
+
 Executes a Nucleus query.
 
 ```bash
@@ -141,6 +148,7 @@ scripts/query.sh '(count RESULTS)'
 ```
 
 ### `status.sh`
+
 Shows session status (timeout, queries, document info).
 
 ```bash
@@ -148,6 +156,7 @@ scripts/status.sh
 ```
 
 ### `bindings.sh`
+
 Shows current variable bindings.
 
 ```bash
@@ -155,6 +164,7 @@ scripts/bindings.sh
 ```
 
 ### `expand.sh`
+
 Expands a handle to see full data (optional limit/offset).
 
 ```bash
@@ -164,6 +174,7 @@ scripts/expand.sh RESULTS 10 20     # Offset 10, limit 10
 ```
 
 ### `close.sh`
+
 Closes the current session and frees memory.
 
 ```bash
@@ -171,6 +182,7 @@ scripts/close.sh
 ```
 
 ### `stats.sh`
+
 Gets document statistics (length, line count).
 
 ```bash
@@ -178,6 +190,7 @@ scripts/stats.sh
 ```
 
 ### `health.sh`
+
 Health check with session info.
 
 ```bash
@@ -187,6 +200,7 @@ scripts/health.sh
 ## Troubleshooting
 
 ### Server not running
+
 ```bash
 # Check if server is running
 scripts/health.sh
@@ -197,20 +211,23 @@ scripts/start-server.sh
 ```
 
 ### Session expired
+
 Sessions auto-expire after 10 minutes of inactivity. Simply load the document again:
+
 ```bash
 scripts/load.sh ./file.txt
 ```
 
 ### Query returns errors
+
 - Check syntax - Nucleus uses S-expressions with parentheses
 - Use single quotes around queries to avoid shell expansion
 - Reference `scripts/help.sh` for command reference
 
 ## Environment Variables
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `LATTICE_PORT` | 3456 | Server port |
-| `LATTICE_HOST` | localhost | Server host |
-| `LATTICE_TIMEOUT` | 600 | Session timeout (seconds) |
+| Variable          | Default   | Description               |
+| ----------------- | --------- | ------------------------- |
+| `LATTICE_PORT`    | 3456      | Server port               |
+| `LATTICE_HOST`    | localhost | Server host               |
+| `LATTICE_TIMEOUT` | 600       | Session timeout (seconds) |

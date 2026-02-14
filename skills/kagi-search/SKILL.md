@@ -44,9 +44,7 @@ kagi-search -d "query"
   "quick_answer": {
     "markdown": "Formatted answer...",
     "raw_text": "Plain text answer...",
-    "references": [
-      { "title": "Source", "url": "https://..." }
-    ]
+    "references": [{ "title": "Source", "url": "https://..." }]
   }
 }
 ```

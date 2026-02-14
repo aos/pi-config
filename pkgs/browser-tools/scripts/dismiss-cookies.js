@@ -314,7 +314,10 @@ try {
   await new Promise((r) => setTimeout(r, 500));
 
   log("trying main page...");
-  let result = await cdp.evaluate(sessionId, `(${COOKIE_DISMISS_SCRIPT})(${!reject})`);
+  let result = await cdp.evaluate(
+    sessionId,
+    `(${COOKIE_DISMISS_SCRIPT})(${!reject})`,
+  );
 
   // If nothing found, try iframes
   if (result.length === 0) {
@@ -324,7 +327,8 @@ try {
       const frames = collectFrames(frameTree);
 
       for (const frame of frames) {
-        if (frame.url === "about:blank" || frame.url.startsWith("javascript:")) continue;
+        if (frame.url === "about:blank" || frame.url.startsWith("javascript:"))
+          continue;
         if (
           frame.url.includes("sp_message") ||
           frame.url.includes("consent") ||
@@ -339,7 +343,7 @@ try {
             const frameResult = await cdp.evaluateInFrame(
               sessionId,
               frame.id,
-              `(${IFRAME_DISMISS_SCRIPT})(${!reject})`
+              `(${IFRAME_DISMISS_SCRIPT})(${!reject})`,
             );
             if (frameResult.length > 0) {
               result = frameResult;

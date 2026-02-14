@@ -1,6 +1,7 @@
 ## Behavior
 
 **Default: Always discuss first, don't act.**
+
 - Do NOT implement, design, or modify code unless explicitly asked
 - Wait for explicit instructions: "implement this", "fix this", "create this"
 - When user mentions an issue, summarize/discuss it first
@@ -9,7 +10,7 @@
 
 - Prefer readable over clever code. Standard library over external deps when reasonable
 - Follow language idioms; when unclear, match existing codebase style
-- Comments: only when intent isn't obvious. Explain *why*, not *what*
+- Comments: only when intent isn't obvious. Explain _why_, not _what_
 - Function docs: one sentence max. Parameters/returns only if non-obvious
 - READMEs: what it does, how to run, key deps. Nothing more
 - Never print secrets. Stop if you suspect secret access is needed
@@ -24,6 +25,7 @@
 - Include commands to reproduce
 
 ## Execution
+
 - Smallest correct change. No drive-by refactors
 - Keep existing conventions unless asked
 - Implement in small steps
