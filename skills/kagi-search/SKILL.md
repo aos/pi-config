@@ -1,6 +1,6 @@
 ---
 name: kagi-search
-description: Web search via Kagi. Use when specifically asked to search Kagi, or when needing to find current information, documentation, facts, or web content. Returns search results and Quick Answers.
+description: "Web search via Kagi. Use when specifically asked to search Kagi, or when needing to find current information, documentation, facts, or web content. Returns search results and Quick Answers."
 ---
 
 # Kagi Search

@@ -1,6 +1,6 @@
 ---
 name: browser-tools
-description: "Interact with web pages by performing actions such as clicking buttons, filling out forms, and navigating links. Works by remote controlling Chrome/Chromium browsers using CDP (Chrome DevTools Protocol). Use when Claude needs to browse the web interactively."
+description: "Interact with web pages by performing actions such as navigating links, clicking buttons, and filling out forms. Works by remote controlling Chrome/Chromium browsers using CDP (Chrome DevTools Protocol). Use when you need to browse the web interactively."
 ---
 
 # Browser Tools Skill
