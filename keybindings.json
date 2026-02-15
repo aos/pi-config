@@ -5,7 +5,8 @@
   "cursorRight": ["right", "ctrl+f"],
   "selectUp": ["up", "ctrl+p"],
   "selectDown": ["down", "ctrl+n"],
-  "toggleSessionPath": "ctrl+shift+p",
+  "toggleSessionPath": "alt+p",
+  "toggleSessionNamedFilter": "alt+n",
   "cycleModelForward": [],
   "cycleModelBackward": []
 }
