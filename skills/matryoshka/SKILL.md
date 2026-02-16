@@ -1,233 +1,123 @@
 ---
 name: matryoshka
-description: Analyze large documents (100x larger than LLM context) using recursive language model with Nucleus DSL. Use when searching, filtering, aggregating text logs, reports, or structured text data without loading everything into context.
+description: "Process files too large to read into context. Use when a file is too big to fit in the context window, when you need to search/grep/filter/count/sum across a large file, when analyzing logs or CSVs with thousands of lines, when exploring a large source code file (list functions, get function bodies, find references), or when you need to extract or aggregate data from a large document without reading the whole thing."
 ---
 
-# Matryoshka - Recursive Language Model
+# Matryoshka
 
-Analyze large documents (> 300 lines). Use when searching, filtering, aggregating text logs, reports, or structured text data without loading everything into context.
+Load a large file into a server, then search, filter, and aggregate it with queries — without pulling the full content into context.
 
 ## Workflow
 
-1. **Start server** - Launch `lattice-http` in background (auto-starts if needed)
-2. **Load document** - Load your file for analysis
-3. **Query progressively** - Refine with grep → filter → aggregate
-4. **Close session** - Free memory when done
+1. **Start server** — `scripts/start-server.sh`
+2. **Load document** — `scripts/load.sh <file>` (auto-starts server if needed)
+3. **Query progressively** — `scripts/query.sh '(grep "pattern")'` → refine with filter/map/count/sum
+4. **Expand results** — `scripts/expand.sh RESULTS` (queries return compact handle stubs, not full data)
+5. **Close session** — `scripts/close.sh`
 
-Query results return compact handle stubs like `$res1: Array(1000) [preview...]` instead of full data. Use `expand` to inspect only what you need.
+Sessions auto-expire after 10 minutes of inactivity. Re-run `load.sh` to restart.
 
 ## Quick Start
 
 ```bash
-# Start server
 scripts/start-server.sh
-
-# Load a document
-scripts/load.sh ./logs.txt
-
-# Search for patterns
+scripts/load.sh ./large-file.txt
 scripts/query.sh '(grep "ERROR")'
-
-# Count results
 scripts/query.sh '(count RESULTS)'
-
-# Sum numeric values
-scripts/query.sh '(sum RESULTS)'
-
-# Close session
+scripts/expand.sh RESULTS 10          # First 10 matches
 scripts/close.sh
 ```
 
-## Nucleus Query Examples
+## Nucleus Query Reference
 
-### Search Commands
+Queries use S-expressions. Always wrap in single quotes to avoid shell expansion.
+
+### Search
 
 ```scheme
-(grep "pattern")              ; Regex search
-(fuzzy_search "query" 10)     ; Fuzzy search, top N results
-(text_stats)                  ; Document metadata
-(lines 1 100)                 ; Get line range
+(grep "regex-pattern")            ; Regex search → binds RESULTS
+(fuzzy_search "query" 10)         ; Fuzzy search, top N results
+(lines 1 100)                     ; Get line range (1-indexed)
+(text_stats)                      ; Document metadata
 ```
 
-### Collection Operations
+### Symbol Operations (code files only)
+
+Requires tree-sitter. Built-in support for: TypeScript, JavaScript, Python, Go.
 
 ```scheme
-(filter RESULTS (lambda x (match x "pattern" 0)))  ; Filter by regex
-(map RESULTS (lambda x (match x "(\\d+)" 1)))      ; Extract from each
-(sum RESULTS)                                       ; Sum numbers in results
-(count RESULTS)                                     ; Count items
+(list_symbols)                    ; List all symbols (functions, classes, methods, etc.)
+(list_symbols "function")         ; Filter by kind: "function", "class", "method", "interface", "type", "struct"
+(get_symbol_body "myFunc")        ; Get source code body for a symbol by name
+(get_symbol_body RESULTS)         ; Get body for symbol from previous query result
+(find_references "myFunc")        ; Find all references to an identifier
 ```
 
-### String Operations
+### Collections
 
 ```scheme
-(match str "pattern" 0)       ; Regex match, return group N
-(replace str "from" "to")     ; String replacement
-(split str "," 0)             ; Split and get index
-(parseInt str)                ; Parse integer
-(parseFloat str)              ; Parse float
+(filter RESULTS (lambda x (match x "pattern" 0)))
+(map RESULTS (lambda x (match x "(\\d+)" 1)))
+(count RESULTS)
+(sum RESULTS)
+(reduce RESULTS 0 (lambda acc x (add acc 1)))
+```
+
+### Strings
+
+```scheme
+(match str "pattern" 0)           ; Regex match, return group N
+(replace str "from" "to")
+(split str "," 0)                 ; Split and get index
+(parseInt str)
+(parseFloat str)
 ```
 
 ### Type Coercion
 
 ```scheme
-(parseDate "Jan 15, 2024")           ; -> "2024-01-15"
-(parseCurrency "$1,234.56")          ; -> 1234.56
-(parseNumber "1,234,567")            ; -> 1234567
-(coerce value "date")                ; Coerce to date
-(extract str "\\$[\\d,]+" 0 "currency")  ; Extract and parse
+(parseDate "Jan 15, 2024")       ; → "2024-01-15"
+(parseCurrency "$1,234.56")      ; → 1234.56
+(parseNumber "1,234,567")        ; → 1234567
+```
+
+### Synthesis
+
+```scheme
+(synthesize ("$100" 100) ("$1,234" 1234) ("$50,000" 50000))
+; → Synthesizes an extraction function from input/output examples
 ```
 
 ## Variables
 
-- `RESULTS` - Latest array result (auto-bound by grep, filter, etc.)
-- `_0`, `_1`, `_2`, ... - Results from each command in sequence
-- `context` - Raw document content
+- `RESULTS` — latest array result (auto-bound by grep, filter, etc.)
+- `_1`, `_2`, `_3`, ... — results from each turn in sequence (1-indexed)
+- `context` — raw document content
 
-## Common Patterns
+## Core Scripts
 
-### Find and count error entries
+All scripts use `LATTICE_PORT` env var (default: 3456).
 
-```scheme
-(grep "ERROR")
-(count RESULTS)
-```
+| Script | Purpose |
+|---|---|
+| `scripts/start-server.sh [port]` | Start `lattice-http` in background |
+| `scripts/load.sh <file>` | Load a document (also accepts stdin: `load.sh - < file`) |
+| `scripts/query.sh '<expr>'` | Execute a Nucleus query |
+| `scripts/expand.sh <var> [limit] [offset]` | Expand a handle to see full data |
+| `scripts/reset.sh` | Reset bindings but keep document loaded |
+| `scripts/close.sh` | Close session, free memory |
 
-### Extract and sum sales from specific region
+Diagnostic scripts also available: `health.sh`, `status.sh`, `bindings.sh`, `stats.sh`.
 
-```scheme
-(grep "SALES.*NORTH")
-(map RESULTS (lambda x (parseCurrency (match x "\\$[\\d,]+" 0))))
-(sum RESULTS)
-```
+## Fixes
 
-### Find recent entries by date
+### Session expired mid-analysis
 
-```scheme
-(grep "2024-01-1")
-(filter RESULTS (lambda x (> (parseDate (match x "\\d{4}-\\d{2}-\\d{2}" 0)) "2024-01-15")))
-```
-
-### Extract emails from text
-
-```scheme
-(grep "[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}")
-```
-
-## Script Reference
-
-All scripts read default port from `LATTICE_PORT` env var (default: 3456).
-
-### `start-server.sh`
-
-Starts `lattice-http` server in background.
-
-```bash
-scripts/start-server.sh [port]   # Default: 3456
-```
-
-### `load.sh`
-
-Loads a document for analysis.
-
-```bash
-scripts/load.sh <file-path>
-scripts/load.sh ./logs.txt
-
-# Or pass content directly
-scripts/load.sh - < file.txt  # Read from stdin
-```
-
-### `query.sh`
-
-Executes a Nucleus query.
-
-```bash
-scripts/query.sh '(grep "ERROR")'
-scripts/query.sh '(count RESULTS)'
-```
-
-### `status.sh`
-
-Shows session status (timeout, queries, document info).
-
-```bash
-scripts/status.sh
-```
-
-### `bindings.sh`
-
-Shows current variable bindings.
-
-```bash
-scripts/bindings.sh
-```
-
-### `expand.sh`
-
-Expands a handle to see full data (optional limit/offset).
-
-```bash
-scripts/expand.sh RESULTS           # Show full RESULTS
-scripts/expand.sh RESULTS 10        # First 10 items
-scripts/expand.sh RESULTS 10 20     # Offset 10, limit 10
-```
-
-### `close.sh`
-
-Closes the current session and frees memory.
-
-```bash
-scripts/close.sh
-```
-
-### `stats.sh`
-
-Gets document statistics (length, line count).
-
-```bash
-scripts/stats.sh
-```
-
-### `health.sh`
-
-Health check with session info.
-
-```bash
-scripts/health.sh
-```
-
-## Troubleshooting
+Re-load the document: `scripts/load.sh <file>`. Variable bindings are lost — re-run queries.
 
 ### Server not running
 
 ```bash
-# Check if server is running
-scripts/health.sh
-
-# Restart
-scripts/close.sh
-scripts/start-server.sh
+scripts/health.sh              # Check
+scripts/start-server.sh        # (Re)start
 ```
-
-### Session expired
-
-Sessions auto-expire after 10 minutes of inactivity. Simply load the document again:
-
-```bash
-scripts/load.sh ./file.txt
-```
-
-### Query returns errors
-
-- Check syntax - Nucleus uses S-expressions with parentheses
-- Use single quotes around queries to avoid shell expansion
-- Reference `scripts/help.sh` for command reference
-
-## Environment Variables
-
-| Variable          | Default   | Description               |
-| ----------------- | --------- | ------------------------- |
-| `LATTICE_PORT`    | 3456      | Server port               |
-| `LATTICE_HOST`    | localhost | Server host               |
-| `LATTICE_TIMEOUT` | 600       | Session timeout (seconds) |

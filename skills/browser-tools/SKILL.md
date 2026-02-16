@@ -1,87 +1,96 @@
 ---
 name: browser-tools
-description: "Interact with web pages by performing actions such as navigating links, clicking buttons, and filling out forms. Works by remote controlling Chrome/Chromium browsers using CDP (Chrome DevTools Protocol). Use when you need to browse the web interactively."
+description: "Browse the web interactively via Chrome DevTools Protocol. Start Chrome, navigate pages, take screenshots, run JavaScript, pick/inspect elements, and dismiss cookie dialogs. Use when you need to view a web page, verify UI, test interactions, capture what a page looks like, extract page content, or debug frontend behavior."
 ---
 
-# Browser Tools Skill
+# Browser Tools
 
-Minimal CDP tools for collaborative site exploration.
+Remote-control Chrome/Chromium via CDP. All commands use `browser-tools` CLI. Run `browser-tools --help` for the full command list.
 
-## Start Chrome
+## Commands
+
+### start
 
 ```bash
 browser-tools start              # Fresh profile
-browser-tools start --profile    # Copy your profile (cookies, logins)
+browser-tools start --profile    # Copy your default Chrome profile (cookies, logins)
 ```
 
-Start Chrome on `:9222` with remote debugging.
+Starts Chrome on `:9222`. **Kills any existing Chrome debugging instance first.** Caches the working browser binary for faster subsequent starts.
 
-## Navigate
+### nav
 
 ```bash
-browser-tools nav https://example.com
-browser-tools nav https://example.com --new
+browser-tools nav <url>          # Navigate current tab
+browser-tools nav <url> --new    # Open in new tab
 ```
 
-Navigate current tab or open new tab.
+**Does not wait for full page load** — only fires the navigation. Add `sleep 2` after if you need the page to settle before screenshotting or evaluating.
 
-## Evaluate JavaScript
+### eval
 
 ```bash
-browser-tools eval 'document.title'
-browser-tools eval 'document.querySelectorAll("a").length'
-browser-tools eval 'JSON.stringify(Array.from(document.querySelectorAll("a")).map(a => ({ text: a.textContent.trim(), href: a.href })))'
+browser-tools eval '<code>'
 ```
 
-Execute JavaScript in active tab (async context). Be careful with string escaping, best to use single quotes.
+Executes JavaScript in the active tab. Code is wrapped in `async () => { return (<code>); }`, so `await` works. Use single quotes to avoid shell escaping issues.
 
-## Screenshot
+**Output formatting:** Arrays of objects print key-value pairs separated by blank lines. Single objects print key-value pairs. Primitives print as-is.
+
+### screenshot
 
 ```bash
 browser-tools screenshot
 ```
 
-Screenshot current viewport, returns temp file path.
+Captures the current viewport as PNG. **Outputs the temp file path to stdout** (e.g., `/tmp/screenshot-2025-02-16T...png`). Use the `read` tool on this path to view the image.
 
-## Pick Elements
+### pick
 
 ```bash
 browser-tools pick "Click the submit button"
 ```
 
-Interactive element picker. Click to select, Cmd/Ctrl+Click for multi-select, Enter to finish.
+Interactive element picker (5-minute timeout). Returns tag, id, class, text content, outer HTML (truncated), and parent chain for selected elements.
 
-## Dismiss Cookie Dialogs
+- **Click** — select single element and finish
+- **Cmd/Ctrl+Click** — add to multi-selection
+- **Enter** — finish multi-selection
+- **ESC** — cancel
+
+### dismiss-cookies
 
 ```bash
 browser-tools dismiss-cookies          # Accept cookies
 browser-tools dismiss-cookies --reject # Reject cookies (where possible)
 ```
 
-Automatically dismisses EU cookie consent dialogs. Supports:
+Dismisses common EU cookie consent dialogs (OneTrust, Cookiebot, Sourcepoint, and many others).
 
-- **OneTrust** (booking.com, ikea.com, many others)
-- **Google** consent dialogs
-- **Cookiebot**
-- **Didomi**
-- **Quantcast Choice**
-- **Usercentrics** (shadow DOM)
-- **Sourcepoint** (BBC, etc. - works with iframes)
-- **Amazon**
-- **TrustArc**
-- **Klaro**
-- Generic cookie banners with common button text patterns
+## Important Behaviors
 
-Run after navigating to a page (with a short delay for dialogs to load):
+- **All commands operate on the most recent tab** (last in the tab list)
+- **Chrome must be started first** — other commands fail with a connection timeout if Chrome isn't running on `:9222`
+- **`eval` timeout is 45s**, `nav` timeout is 45s, `pick` timeout is 5 minutes
+
+## Common Workflows
+
+### Navigate and screenshot
 
 ```bash
-browser-tools nav https://example.com && sleep 2 && browser-tools dismiss-cookies
+browser-tools nav https://example.com && sleep 2 && browser-tools screenshot
 ```
 
-## Debug Mode
-
-Set `DEBUG=1` to enable verbose logging to stderr:
+### Extract structured data from a page
 
 ```bash
-DEBUG=1 browser-tools nav https://example.com
+browser-tools eval 'JSON.stringify(Array.from(document.querySelectorAll("a")).map(a => ({ text: a.textContent.trim(), href: a.href })))'
 ```
+
+### Navigate, dismiss cookies, then screenshot
+
+```bash
+browser-tools nav https://example.com && sleep 2 && browser-tools dismiss-cookies && sleep 1 && browser-tools screenshot
+```
+
+## Fixes
