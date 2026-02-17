@@ -9,9 +9,9 @@ Brief overview of what this skill does.
 
 ## Setup
 
-Prerequisites or one-time configuration (if any). Always push any logic or commands that need to be run a script to improve reliability (Claude likes to skip setup steps, so don't give it a chance).
+Prerequisites or one-time configuration (if any). Always push any logic or commands that need to be run a script to improve reliability (the agent likes to skip setup steps, so don't give it a chance).
 
-*Important*: Make sure Claude actually runs that script!
+*Important*: Make sure the agent actually runs that script!
 
 ## Workflow
 
