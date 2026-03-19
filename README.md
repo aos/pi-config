@@ -19,7 +19,7 @@ These components are loaded by pi when this repo is installed as a package:
 
 | Skill                                              | Description                                                                                                                               |
 | -------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
-| [browser-tools](skills/browser-tools/SKILL.md)     | Interact with web pages via Chrome DevTools Protocol. Navigate, evaluate JS, take screenshots, pick elements, and dismiss cookie dialogs. |
+| [chrome-cdp](skills/chrome-cdp/SKILL.md)            | Interact with local Chrome browser via Chrome DevTools Protocol. Navigate, evaluate JS, take screenshots, and inspect accessibility trees. |
 | [frontend-design](skills/frontend-design/SKILL.md) | Design and implement distinctive, production-ready frontend interfaces with strong aesthetic direction.                                   |
 | [kagi-search](skills/kagi-search/SKILL.md)         | Web search via Kagi. Returns search results with Quick Answers.                                                                           |
 | [matryoshka](skills/matryoshka/SKILL.md)           | Analyze large documents (100x larger than LLM context) using recursive language model with Nucleus DSL.                                   |
@@ -40,7 +40,7 @@ These components are only available when using the nix flake home-manager module
 | Package          | Description                                                 |
 | ---------------- | ----------------------------------------------------------- |
 | `kagi-search`    | CLI tool for Kagi web search                                |
-| `browser-tools`  | CLI tool for Chrome CDP automation                          |
+| `nodejs`         | Required by chrome-cdp skill's cdp.mjs                      |
 | `matryoshka-rlm` | Recursive language model server for large document analysis |
 
 ### Configuration
@@ -78,7 +78,7 @@ imports = [ inputs.pi-config.homeManagerModules.default ];
 
 This:
 
-- Installs `kagi-search`, `browser-tools`, and `matryoshka-rlm` binaries
+- Installs `kagi-search`, `nodejs`, and `matryoshka-rlm` binaries
 - Symlinks agent configs into `~/.pi/`
 - Exposes the repo as a local pi package at `~/.pi/agent/packages/pi-config`
 

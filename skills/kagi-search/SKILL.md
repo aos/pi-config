@@ -38,7 +38,7 @@ kagi-search --json -n 5 "query"    # Limit to 5 results (default: 10)
 1. Run `kagi-search --json "query"`
 2. Check `quick_answer.markdown` first — often has the direct answer with inline citations
 3. Fall back to `results` array for individual sources and snippets
-4. Use `browser-tools` to visit specific result URLs when you need full page content
+4. Use the `chrome-cdp` skill to visit specific result URLs when you need full page content
 
 ## Important Behaviors
 

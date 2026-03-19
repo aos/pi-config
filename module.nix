@@ -1,3 +1,5 @@
+{ chrome-cdp-skill }:
+
 { lib, pkgs, ... }:
 
 let
@@ -15,12 +17,19 @@ let
         "pkgs"
       ];
   };
+
+  # Merge repo source with external skills into a single pi package
+  pi-config-pkg = pkgs.runCommand "pi-config-pkg" { } ''
+    cp -r ${src} $out
+    chmod -R +w $out/skills
+    cp -r ${chrome-cdp-skill}/skills/chrome-cdp $out/skills/chrome-cdp
+  '';
 in
 {
   home.packages = with pkgs; [
     kagi-search
-    browser-tools
     matryoshka-rlm
+    nodejs # needed by chrome-cdp skill's cdp.mjs
   ];
 
   home.file = {
@@ -31,8 +40,7 @@ in
     ".pi/agent/model-agents.json".source = "${src}/model-agents.json";
 
     # extensions, skills, prompts are packaged
-
-    # Expose the whole repo as a local pi package
-    ".pi/agent/packages/pi-config".source = src;
+    # Includes external skills merged in (chrome-cdp)
+    ".pi/agent/packages/pi-config".source = pi-config-pkg;
   };
 }
