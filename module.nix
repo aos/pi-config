@@ -18,11 +18,17 @@ let
       ];
   };
 
+  # Patch the upstream chrome-cdp skill to spawn Chrome when no CDP is available
+  chrome-cdp-patched = pkgs.applyPatches {
+    src = chrome-cdp-skill;
+    patches = [ ./pkgs/chrome-cdp-skill/spawn-chrome-fallback.patch ];
+  };
+
   # Merge repo source with external skills into a single pi package
   pi-config-pkg = pkgs.runCommand "pi-config-pkg" { } ''
     cp -r ${src} $out
     chmod -R +w $out/skills
-    cp -r ${chrome-cdp-skill}/skills/chrome-cdp $out/skills/chrome-cdp
+    cp -r ${chrome-cdp-patched}/skills/chrome-cdp $out/skills/chrome-cdp
   '';
 in
 {
