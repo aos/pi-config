@@ -1,5 +1,5 @@
---- a/skills/chrome-cdp/scripts/cdp.mjs	2026-03-28 09:25:24.144381319 -0400
-+++ b/skills/chrome-cdp/scripts/cdp.mjs	2026-03-28 09:26:32.438342596 -0400
+--- a/skills/chrome-cdp/scripts/cdp.mjs	2026-03-28 09:38:03.289529174 -0400
++++ b/skills/chrome-cdp/scripts/cdp.mjs	2026-03-28 09:38:47.409343256 -0400
 @@ -8,14 +8,15 @@
  // daemon (= once per tab). Daemons auto-exit after 20min idle.
  
@@ -36,10 +36,10 @@
 +  const lines = readFileSync(portFile, 'utf8').trim().split('\n');
 +  if (lines.length < 2 || !lines[0] || !lines[1]) return null;
 +  const host = process.env.CDP_HOST || '127.0.0.1';
-+  return `ws://${host}:${lines[0]}${lines[1]}`;
++  return { wsUrl: `ws://${host}:${lines[0]}${lines[1]}`, port: parseInt(lines[0], 10), host };
 +}
 +
-+function findExistingWsUrl() {
++function findExistingPortFile() {
    const home = homedir();
    // macOS: ~/Library/Application Support/<name>/DevToolsActivePort
    const macBrowsers = [
@@ -52,7 +52,7 @@
      ...macBrowsers.flatMap(b => [
        resolve(home, 'Library/Application Support', b, 'DevToolsActivePort'),
        resolve(home, 'Library/Application Support', b, 'Default/DevToolsActivePort'),
-@@ -80,11 +92,95 @@
+@@ -80,11 +92,111 @@
      }) : []),
    ].filter(Boolean);
    const portFile = candidates.find(p => existsSync(p));
@@ -63,6 +63,18 @@
 -  return `ws://${host}:${lines[0]}${lines[1]}`;
 +  if (!portFile) return null;
 +  return readPortFile(portFile);
++}
++
++// Quick TCP probe to check if a port is actually listening
++function isPortOpen(host, port, timeoutMs = 1000) {
++  return new Promise((resolve) => {
++    const sock = net.connect({ host, port }, () => {
++      sock.destroy();
++      resolve(true);
++    });
++    sock.on('error', () => resolve(false));
++    sock.setTimeout(timeoutMs, () => { sock.destroy(); resolve(false); });
++  });
 +}
 +
 +function findChromeBinary() {
@@ -136,10 +148,10 @@
 +  while (Date.now() < deadline) {
 +    await sleep(200);
 +    if (existsSync(portFilePath)) {
-+      const wsUrl = readPortFile(portFilePath);
-+      if (wsUrl) {
++      const info = readPortFile(portFilePath);
++      if (info) {
 +        process.stderr.write(`Chrome spawned, CDP available.\n`);
-+        return wsUrl;
++        return info.wsUrl;
 +      }
 +    }
 +  }
@@ -147,13 +159,17 @@
 +}
 +
 +async function getWsUrl() {
-+  const existing = findExistingWsUrl();
-+  if (existing) return existing;
++  const info = findExistingPortFile();
++  if (info) {
++    // Verify the port is actually listening (not a stale file from a dead process)
++    if (await isPortOpen(info.host, info.port)) return info.wsUrl;
++    process.stderr.write(`Found DevToolsActivePort but port ${info.port} is not listening (stale).\n`);
++  }
 +  return spawnChromeAndGetWsUrl();
  }
  
  const sleep = (ms) => new Promise(r => setTimeout(r, ms));
-@@ -488,7 +584,7 @@
+@@ -488,7 +600,7 @@
  
    const cdp = new CDP();
    try {
@@ -162,7 +178,7 @@
    } catch (e) {
      process.stderr.write(`Daemon: cannot connect to Chrome: ${e.message}\n`);
      process.exit(1);
-@@ -791,7 +887,7 @@
+@@ -791,7 +903,7 @@
  
    if (cmd === 'list' || cmd === 'ls') {
      const cdp = new CDP();
@@ -171,7 +187,7 @@
      const pages = await getPages(cdp);
      cdp.close();
      writeFileSync(PAGES_CACHE, JSON.stringify(pages), { mode: 0o600 });
-@@ -804,7 +900,7 @@
+@@ -804,7 +916,7 @@
    if (cmd === 'open') {
      const url = args[0] || 'about:blank';
      const cdp = new CDP();
