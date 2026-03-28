@@ -20,6 +20,7 @@ let
 
   # Patch the upstream chrome-cdp skill to spawn Chrome when no CDP is available
   chrome-cdp-patched = pkgs.applyPatches {
+    name = "chrome-cdp-skill-patched";
     src = chrome-cdp-skill;
     patches = [ ./pkgs/chrome-cdp-skill/spawn-chrome-fallback.patch ];
   };
