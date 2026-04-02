@@ -1,6 +1,4 @@
-# /// script
-# requires-python = ">=3.10"
-# ///
+#!/usr/bin/env python3
 """Grafana API operations via chrome-cdp.
 
 All API calls run through the browser's authenticated session — no tokens needed.

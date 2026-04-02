@@ -37,16 +37,16 @@ The `scripts/grafana.py` tool handles this automatically. All commands go throug
 
 ## Tool Usage
 
-All operations go through `scripts/grafana.py`. **Always invoke with `uv run` and pass `--target`:**
+All operations go through `scripts/grafana.py`. **Always pass `--target`:**
 
 ```bash
-uv run skills/grafana-dashboards/scripts/grafana.py --target <target> --help
+python3 skills/grafana-dashboards/scripts/grafana.py --target <target> --help
 ```
 
 ### Discover datasources
 
 ```bash
-uv run skills/grafana-dashboards/scripts/grafana.py --target <target> list-datasources
+python3 skills/grafana-dashboards/scripts/grafana.py --target <target> list-datasources
 ```
 
 ### Run queries
@@ -54,14 +54,14 @@ uv run skills/grafana-dashboards/scripts/grafana.py --target <target> list-datas
 Instant query (point-in-time):
 
 ```bash
-uv run skills/grafana-dashboards/scripts/grafana.py --target <target> query \
+python3 skills/grafana-dashboards/scripts/grafana.py --target <target> query \
   --datasource-uid <uid> --expr "up{job='myapp'}"
 ```
 
 Range query with summary stats:
 
 ```bash
-uv run skills/grafana-dashboards/scripts/grafana.py --target <target> query \
+python3 skills/grafana-dashboards/scripts/grafana.py --target <target> query \
   --datasource-uid <uid> --expr "rate(http_requests_total[5m])" \
   --range 30d --step 1h
 ```
@@ -71,13 +71,13 @@ uv run skills/grafana-dashboards/scripts/grafana.py --target <target> query \
 Full JSON:
 
 ```bash
-uv run skills/grafana-dashboards/scripts/grafana.py --target <target> get-dashboard --uid <dashboard-uid>
+python3 skills/grafana-dashboards/scripts/grafana.py --target <target> get-dashboard --uid <dashboard-uid>
 ```
 
 Panel summary (id, title, type, grid position):
 
 ```bash
-uv run skills/grafana-dashboards/scripts/grafana.py --target <target> inspect-panels --uid <dashboard-uid>
+python3 skills/grafana-dashboards/scripts/grafana.py --target <target> inspect-panels --uid <dashboard-uid>
 ```
 
 ### Save a dashboard
@@ -85,7 +85,7 @@ uv run skills/grafana-dashboards/scripts/grafana.py --target <target> inspect-pa
 Write dashboard JSON to a file, then save:
 
 ```bash
-uv run skills/grafana-dashboards/scripts/grafana.py --target <target> save-dashboard --file /tmp/dashboard.json
+python3 skills/grafana-dashboards/scripts/grafana.py --target <target> save-dashboard --file /tmp/dashboard.json
 ```
 
 The file can be either a full `{"dashboard": {...}, "overwrite": true}` payload, or just the dashboard object (will be wrapped automatically with `overwrite: true`).
