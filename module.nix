@@ -22,7 +22,10 @@ let
   chrome-cdp-patched = pkgs.applyPatches {
     name = "chrome-cdp-skill-patched";
     src = chrome-cdp-skill;
-    patches = [ ./pkgs/chrome-cdp-skill/spawn-chrome-fallback.patch ];
+    patches = [
+      ./pkgs/chrome-cdp-skill/spawn-chrome-fallback.patch
+      ./pkgs/chrome-cdp-skill/discoverability.patch
+    ];
   };
 
   # Merge repo source with external skills into a single pi package

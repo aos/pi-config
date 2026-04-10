@@ -1,11 +1,17 @@
 ---
 name: kagi-search
-description: "Search the web via Kagi. Use when you need to find current information, look up documentation, research a library or tool, check how to do something, find recent news, verify facts, locate official sources, or answer questions that require up-to-date knowledge. Returns search results with snippets and a Quick Answer summary with citations."
+description: "Search the web via Kagi to discover sources, documentation, official pages, recent news, or other current information when the user has not already provided a specific URL to inspect. Use for open-ended research, finding the right page to read, and verifying facts across multiple sources. If the user gives a direct link, read that link first with curl or chrome-cdp, and use Kagi only when you need additional sources, independent verification, or a replacement because the link is insufficient."
 ---
 
 # Kagi Search
 
 Search the web using Kagi. Run `kagi-search --help` for the full flag list.
+
+## When to use this
+
+- Use this for open-ended web research when you need to find sources or the user did not provide a specific page.
+- If the user pasted a URL, do **not** search for it first. Read that URL directly with `curl` or the `chrome-cdp` skill.
+- Use Kagi after a direct-link read only when you need more sources, independent verification, official documentation, or a fallback because the provided page is insufficient.
 
 ## Usage
 
