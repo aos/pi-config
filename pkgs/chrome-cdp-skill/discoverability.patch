@@ -4,7 +4,7 @@
  ---
  name: chrome-cdp
 -description: Interact with local Chrome browser session (only on explicit user approval after being asked to inspect, debug, or interact with a page open in Chrome)
-+description: Use Chrome DevTools Protocol to open, inspect, and interact with web pages in a local Chrome browser. Use when the user shares or pastes a URL and you need information from the rendered page, especially when curl, raw HTTP, or static HTML is not enough: JavaScript-rendered content, authenticated pages using browser session cookies, scrolling, clicking, form input, screenshots, accessibility snapshots, or extracting data from dynamic UIs. A user-provided URL counts as approval to open that page; ask before inspecting unrelated existing tabs.
++description: "Use Chrome DevTools Protocol to open, inspect, and interact with web pages in a local Chrome browser. Use when the user shares or pastes a URL and you need information from the rendered page, especially when curl, raw HTTP, or static HTML is not enough: JavaScript-rendered content, authenticated pages using browser session cookies, scrolling, clicking, form input, screenshots, accessibility snapshots, or extracting data from dynamic UIs. A user-provided URL counts as approval to open that page; ask before inspecting unrelated existing tabs."
  ---
  
  # Chrome CDP
