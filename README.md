@@ -2,6 +2,17 @@
 
 Personal configuration for [pi](https://github.com/badlogic/pi-mono/tree/main/packages/coding-agent) coding agent.
 
+## Tools & Skills
+
+| Tool/Skill                                | Description                                                                                               |
+| ----------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| [chrome-cdp](chrome-cdp/)                 | Interact with local Chrome browser via Chrome DevTools Protocol. Navigate, evaluate JS, take screenshots. |
+| [kagi-search](kagi-search/)               | CLI tool for Kagi web search with Quick Answers.                                                          |
+| [grafana-dashboards](grafana-dashboards/) | Skill-only: create and manage Grafana dashboards via the API.                                             |
+| [teaching-assistant](teaching-assistant/) | Skill-only: guided learning through explanation and feedback.                                             |
+
+Each tool ships its skill definition under `<tool>/skill/` (installed to `$out/share/skills/<tool>/`).
+
 ## Pi Package (available via `pi install` or nix module)
 
 These components are loaded by pi when this repo is installed as a package:
@@ -15,15 +26,6 @@ These components are loaded by pi when this repo is installed as a package:
 | [permission-gate](extensions/permission-gate.ts) | Prompts for confirmation before running potentially dangerous bash commands (rm -rf, sudo, chmod/chown 777).                                                                |
 | [review](extensions/review.ts)                   | Provides a `/review` command for code review. Supports PR review, uncommitted changes, branch comparison, and custom review instructions.                                   |
 
-### Skills
-
-| Skill                                              | Description                                                                                                                               |
-| -------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
-| [chrome-cdp](skills/chrome-cdp/SKILL.md)            | Interact with local Chrome browser via Chrome DevTools Protocol. Navigate, evaluate JS, take screenshots, and inspect accessibility trees. |
-| [frontend-design](skills/frontend-design/SKILL.md) | Design and implement distinctive, production-ready frontend interfaces with strong aesthetic direction.                                   |
-| [kagi-search](skills/kagi-search/SKILL.md)         | Web search via Kagi. Returns search results with Quick Answers.                                                                           |
-| [matryoshka](skills/matryoshka/SKILL.md)           | Analyze large documents (100x larger than LLM context) using recursive language model with Nucleus DSL.                                   |
-
 ### Prompts
 
 | Prompt                        | Description                                                                                                            |
@@ -31,29 +33,9 @@ These components are loaded by pi when this repo is installed as a package:
 | [handoff](prompts/handoff.md) | Creates a detailed handoff plan of the conversation for continuing work in a new session. Writes to `.plan/handoffs/`. |
 | [pickup](prompts/pickup.md)   | Resumes work from a previous handoff session stored in `.plan/handoffs/`.                                              |
 
-## Nix-only (home-manager module)
+## Installation
 
-These components are only available when using the nix flake home-manager module:
-
-### Binaries
-
-| Package          | Description                                                 |
-| ---------------- | ----------------------------------------------------------- |
-| `kagi-search`    | CLI tool for Kagi web search                                |
-| `nodejs`         | Required by chrome-cdp skill's cdp.mjs                      |
-| `matryoshka-rlm` | Recursive language model server for large document analysis |
-
-### Configuration
-
-| Config              | Description                      |
-| ------------------- | -------------------------------- |
-| `keybindings`       | Custom keybindings for pi TUI    |
-| `model-agents.json` | Default model-to-agent mappings  |
-| `AGENTS.md`         | Global agent behavior guidelines |
-
-## Usage
-
-### Nix flake
+### Using Nix Flakes + home-manager
 
 Add as an input to your flake:
 
@@ -64,23 +46,20 @@ inputs.pi-config = {
 };
 ```
 
-Add the overlay to your nixpkgs:
-
-```nix
-overlays = [ inputs.pi-config.overlays.default ];
-```
-
 Import the home-manager module:
 
 ```nix
-imports = [ inputs.pi-config.homeManagerModules.default ];
+imports = [ inputs.pi-config.homeModules.default ];
+
+programs.pi-config.enable = true;
 ```
 
 This:
 
-- Installs `kagi-search`, `nodejs`, and `matryoshka-rlm` binaries
-- Symlinks agent configs into `~/.pi/`
-- Exposes the repo as a local pi package at `~/.pi/agent/packages/pi-config`
+- Installs `kagi-search` and `chrome-cdp` binaries
+- Assembles a pi package at `~/.pi/agent/packages/pi-config` (extensions, skills, prompts)
+- Symlinks agent configs (`scoped-agents`, `AGENTS.md`, `keybindings.json`, `model-agents.json`) into `~/.pi/`
+- Symlinks skill definitions into `~/.claude/skills/` and `~/.opencode/skills/`
 
 After first deploy, add the package path to `~/.pi/agent/settings.json`:
 
@@ -90,12 +69,43 @@ After first deploy, add the package path to `~/.pi/agent/settings.json`:
 }
 ```
 
-### Pi package (standalone)
+### Per-skill modules
 
-Can also be installed directly via pi:
+Individual skills are available as standalone home-manager modules:
+
+```nix
+imports = [
+  inputs.pi-config.homeModules.kagi-search
+  inputs.pi-config.homeModules.chrome-cdp
+];
+```
+
+These install just the tool + skill definition, without the full pi-config extensions/prompts/global config.
+
+### Override `skillDirs`
+
+By default skill definitions are symlinked into `~/.claude/skills/` and `~/.opencode/skills/`. Override `programs.pi-config.skillDirs` to target different agent harnesses:
+
+```nix
+programs.pi-config.skillDirs = [ ".claude/skills" ];
+```
+
+### Pi package (standalone, no nix)
 
 ```bash
 pi install git:github.com/aos/pi-config
 ```
 
-This picks up extensions, skills, prompts. Binaries, keybindings, and global config files require the nix flake.
+This picks up extensions, skills, and prompts. Binaries, keybindings, and global config files require the nix flake.
+
+## Development
+
+```bash
+nix develop
+nix fmt
+nix flake check
+```
+
+## License
+
+MIT

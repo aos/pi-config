@@ -29,9 +29,9 @@ cp .pi/skills/skill-creator/assets/SKILL.template.md .pi/skills/my-skill-name/SK
 
 ## Writing Discoverable Descriptions
 
-The only things the agent sees before using a skill are the name and description in the frontmatter. Optimizing the description is key to making it discoverable. In general, the agent is too conservative when deciding whether to use a skill. Maximize the likelihood of the agent using the skill by writing a description that captures the full scope of both **what** the skill does and **when** the skill should be used (and make sure to include *both*!). If the agent loads a skill then decides not to use it, no big deal. If the agent doesn't load a skill and spends time spiralling on an already solved task, the session is ruined. High skill discoverability is *extremely important*.
+The only things the agent sees before using a skill are the name and description in the frontmatter. Optimizing the description is key to making it discoverable. In general, the agent is too conservative when deciding whether to use a skill. Maximize the likelihood of the agent using the skill by writing a description that captures the full scope of both **what** the skill does and **when** the skill should be used (and make sure to include _both_!). If the agent loads a skill then decides not to use it, no big deal. If the agent doesn't load a skill and spends time spiralling on an already solved task, the session is ruined. High skill discoverability is _extremely important_.
 
-Don't rely on users saying magic words. Think about what *situations* call for this skill, including ones where the agent should decide to use it on its own, then write a description that captures those scenarios.
+Don't rely on users saying magic words. Think about what _situations_ call for this skill, including ones where the agent should decide to use it on its own, then write a description that captures those scenarios.
 
 Note that the description must be 1024 characters or less, and it must be on a single line (the agent harness does not support multiline YAML).
 
@@ -53,17 +53,17 @@ description: Toolkit for viewing, reading, extracting text, creating, editing, c
 
 ### Toolbox
 
-The toolbox pattern is implemented by skills that contain non-trivial automation scripts (AKA "tools") and teach the agent how to use them. SKILL.md provides context and information about how to properly use the tools; the tools themselves are python scripts that encapsulate complexity and run commands without clogging up the agent's context window or making silly mistakes. This helps keep the agent focused on *when* and *how* to invoke tools rather than repeatedly reimplementing their logic, which over the course of a long session substantially increases reliability.
+The toolbox pattern is implemented by skills that contain non-trivial automation scripts (AKA "tools") and teach the agent how to use them. SKILL.md provides context and information about how to properly use the tools; the tools themselves are python scripts that encapsulate complexity and run commands without clogging up the agent's context window or making silly mistakes. This helps keep the agent focused on _when_ and _how_ to invoke tools rather than repeatedly reimplementing their logic, which over the course of a long session substantially increases reliability.
 
 For scripting, always prefer python. Run shell commands with `subprocess.run`. Don't use shell commands for operations that could be performed in python (file manipulation, hashing, regex, etc). When done properly, these scripts are trivially portable across platforms.
 
-Always use `uv` with inline dependencies. In the SKILL.md text, make it clear that the scripts must be invoked with `uv`. If you're not *extremely clear* that the agent should use `uv`, the agent **will** try to run the scripts with `python3` and then be confused when it doesn't work.
+Always use `uv` with inline dependencies. In the SKILL.md text, make it clear that the scripts must be invoked with `uv`. If you're not _extremely clear_ that the agent should use `uv`, the agent **will** try to run the scripts with `python3` and then be confused when it doesn't work.
 
 Design the API of scripts with care. Always provide `--help`. Avoid exposing unneeded configuration parameters. Scripts should create clean abstractions for the agent to consume. As the agent works, contents of SKILL.md will fade but the script's API will remain, so make sure it's good.
 
 ### Knowledge Injection
 
-To summarize: Neo learns Kung Fu. 
+To summarize: Neo learns Kung Fu.
 
 A knowledge injection is when you give the agent a batch of valuable knowledge that it didn't have before that lets it do new things. Examples:
 
@@ -77,7 +77,7 @@ Use `references/` to store documents. If appropriate, use progressive disclosure
 
 ### Valuable Knowledge
 
-A common pitfall is for the agent to create skills and fill them up with generated information about how to complete a task. The problem with this is that the generated content is all content that's already inside the agent's probability space. The agent is effectively telling itself information that it *already knows*!
+A common pitfall is for the agent to create skills and fill them up with generated information about how to complete a task. The problem with this is that the generated content is all content that's already inside the agent's probability space. The agent is effectively telling itself information that it _already knows_!
 
 Instead, the agent should strive to document in SKILL.md only information that:
 
