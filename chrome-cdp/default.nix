@@ -2,11 +2,15 @@
   runCommand,
   makeWrapper,
   nodejs_22,
+  ungoogled-chromium,
 }:
 
 runCommand "chrome-cdp"
   {
-    nativeBuildInputs = [ makeWrapper ];
+    nativeBuildInputs = [
+      makeWrapper
+      ungoogled-chromium
+    ];
     meta = {
       description = "Lightweight Chrome DevTools Protocol CLI";
       mainProgram = "cdp";
