@@ -1082,6 +1082,8 @@ Usage: cdp <command> [args]
                                     e.g. evalraw <t> "DOM.getDocument" '{}'
   open  [url]                       Open a new tab (default: about:blank)
                                     Note: each new tab triggers a fresh "Allow debugging?" prompt
+  open-chrome                       Launch the bundled Chromium with remote debugging
+                                    (no-op if a debuggable browser is already running)
   stop  [target]                    Stop daemon(s)
 
 <target> is a unique targetId prefix from "cdp list". If a prefix is ambiguous,
@@ -1175,6 +1177,22 @@ async function main() {
     console.log(
       'Note: this tab will need "Allow debugging?" approval on first access.',
     );
+    return;
+  }
+
+  // Launch bundled Chromium with remote debugging
+  if (cmd === "open-chrome") {
+    const existing = findExistingPortFile();
+    if (existing && (await isPortOpen(existing.host, existing.port))) {
+      console.log(
+        `Chrome already running with remote debugging on ${existing.host}:${existing.port}.`,
+      );
+      console.log('Run "cdp list" to see open tabs.');
+      return;
+    }
+    const wsUrl = await spawnChromeAndGetWsUrl();
+    console.log(`Chrome launched. CDP endpoint: ${wsUrl}`);
+    console.log('Run "cdp list" to see open tabs.');
     return;
   }
 
