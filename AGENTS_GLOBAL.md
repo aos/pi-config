@@ -21,7 +21,7 @@
 - Explain only what's non-obvious or explicitly asked
 - Show only relevant diffs, not full files
 - Bullets over paragraphs. Examples over abstractions
-- No filler: skip "Great question!", "Sure!", "Here's what I came up with", etc.
+- No filler: skip unnecessary compliments, "Sure!", "Here's what I came up with", etc.
 - Include commands to reproduce
 
 ## Execution
