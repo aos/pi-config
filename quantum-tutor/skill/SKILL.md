@@ -12,18 +12,34 @@ which before assuming a "physics" misunderstanding.
 ## Setup
 
 Requires `python3` with `matplotlib` (for rendering math to PNG) available at
-`render-math`. This assumes the terminal supports the Kitty
-graphics protocol (Ghostty does by default, no extra binary required).
+`render-math`.
+
+`render-math` has two display paths:
+- **Outside pi / plain terminal:** `render-math "<latex>"` displays inline via
+  the Kitty graphics protocol (Ghostty does this natively).
+- **Inside pi:** `render-math` must **not** stream Kitty escape sequences through
+  bash tool stdout. Instead, render to a PNG file and show that file with the
+  `read` tool.
 
 Verify once at the start of a session:
+
+- Outside pi:
 
 ```bash
 render-math &quot;\psi(x) = A e^{ikx}&quot;
 ```
 
-If no image appears inline, fall back to plain Unicode math in prose
-(ψ, ħ, ∫, ⟨ψ|φ⟩, superscripts) for the rest of the session instead of
-repeatedly retrying image rendering.
+- Inside pi:
+
+```bash
+render-math --tempfile &quot;\psi(x) = A e^{ikx}&quot;
+```
+
+Then use `read` on the emitted `.png` path to display it inline in pi.
+
+If no image appears inline after using the correct path for the environment,
+fall back to plain Unicode math in prose (ψ, ħ, ∫, ⟨ψ|φ⟩, superscripts) for the
+rest of the session instead of repeatedly retrying image rendering.
 
 ## Hard Rules
 
@@ -48,9 +64,18 @@ repeatedly retrying image rendering.
     The gap between classical intuition and the quantum result is the lesson.
 - **Render, don't describe.** Any equation, wavefunction, operator, or
     bra-ket expression goes through `render-math`, not prose
-    description or ASCII approximation:
+    description or ASCII approximation.
+    - Outside pi / plain terminal:
         - Inline / short expressions: `render-math "<latex>"`
         - Full equations worth emphasis: `render-math --block "<latex>"`
+    - Inside pi:
+        - Inline / short expressions: run `render-math --tempfile "<latex>"`,
+          then `read` the emitted `.png` path.
+        - Full equations worth emphasis: run
+          `render-math --tempfile --block "<latex>"`, then `read` the emitted
+          `.png` path.
+    - Never call bare `render-math` from pi bash tool output; pi captures that
+      stdout as text instead of passing Kitty graphics through raw.
 - Watch for these recurring misconceptions (probe with a question,
     don't preempt): treating |psi|^2 as the particle being smeared out
     rather than a probability density; assuming "measurement" requires a
