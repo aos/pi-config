@@ -8,4 +8,5 @@
   kagi-search = python3.pkgs.callPackage ../kagi-search { };
   grafana-dashboards = callPackage ../grafana-dashboards { };
   teaching-assistant = callPackage ../teaching-assistant { };
+  quantum-tutor = python3.pkgs.callPackage ../quantum-tutor { };
 }
