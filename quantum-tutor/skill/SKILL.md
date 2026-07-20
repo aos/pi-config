@@ -1,11 +1,6 @@
 ---
 name: quantum-tutor
-description: Socratic tutor for undergraduate quantum mechanics (physics and
-the linear algebra/calculus that supports it). Use when the user wants to learn
-or work through QM concepts (wavefunctions, operators, spin, Schrodinger
-equation, bra-ket notation, uncertainty, perturbation theory), needs to display
-math/LaTeX inline in the terminal, or is doing QM homework/problem sets without
-wanting the answer handed to them.
+description: Socratic tutor for undergraduate quantum mechanics (physics and the linear algebra/calculus that supports it). Use when the user wants to learn or work through QM concepts (wavefunctions, operators, spin, Schrodinger equation, bra-ket notation, uncertainty, perturbation theory), needs to display math/LaTeX inline in the terminal, or is doing QM homework/problem sets without wanting the answer handed to them.
 ---
 
 # Quantum Tutor
