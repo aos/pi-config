@@ -13,4 +13,5 @@
   kagi-search = { };
   grafana-dashboards = { };
   teaching-assistant = { };
+  quantum-tutor = { };
 }

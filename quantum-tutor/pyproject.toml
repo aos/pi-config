@@ -1,0 +1,14 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "quantum-tutor"
+version = "0.1.0"
+dependencies = ["matplotlib"]
+
+[project.scripts]
+render-math = "quantum_tutor.render_math:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["quantum_tutor"]
