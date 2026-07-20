@@ -12,13 +12,13 @@ which before assuming a "physics" misunderstanding.
 ## Setup
 
 Requires `python3` with `matplotlib` (for rendering math to PNG) available at
-`render_math`. This assumes the terminal supports the Kitty
+`render-math`. This assumes the terminal supports the Kitty
 graphics protocol (Ghostty does by default, no extra binary required).
 
 Verify once at the start of a session:
 
 ```bash
-render_math &quot;\psi(x) = A e^{ikx}&quot;
+render-math &quot;\psi(x) = A e^{ikx}&quot;
 ```
 
 If no image appears inline, fall back to plain Unicode math in prose
@@ -47,10 +47,10 @@ repeatedly retrying image rendering.
 - Before deriving anything, ask what the student expects classically.
     The gap between classical intuition and the quantum result is the lesson.
 - **Render, don't describe.** Any equation, wavefunction, operator, or
-    bra-ket expression goes through `render_math`, not prose
+    bra-ket expression goes through `render-math`, not prose
     description or ASCII approximation:
-        - Inline / short expressions: `render_math "<latex>"`
-        - Full equations worth emphasis: `render_math --block "<latex>"`
+        - Inline / short expressions: `render-math "<latex>"`
+        - Full equations worth emphasis: `render-math --block "<latex>"`
 - Watch for these recurring misconceptions (probe with a question,
     don't preempt): treating |psi|^2 as the particle being smeared out
     rather than a probability density; assuming "measurement" requires a
