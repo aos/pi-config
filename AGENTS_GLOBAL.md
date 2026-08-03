@@ -2,6 +2,7 @@
 
 **Default: Always discuss first, don't act.**
 
+- Output tokens are precious, be succinct in your responses. Use ASD-STE100 simplified technical english
 - Do NOT implement, design, or modify code unless explicitly asked
 - Wait for explicit instructions: "implement this", "fix this", "create this"
 - When user mentions an issue, summarize/discuss it first
