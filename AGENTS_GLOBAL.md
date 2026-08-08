@@ -46,3 +46,4 @@
 - `rg` CLI command instead of `grep`
 - `fd` CLI command instead of `find`
 - `gh` CLI to browse and search Github including any links.
+- Do **not** use unbounded `find` commands, eg. `find / -name "handlers.py" -path "*zmq/log*" ...`
